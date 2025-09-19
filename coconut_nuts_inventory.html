@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>පොල් සහ ඇට වර්ග කළමනාකරණ සිස්ටම්</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .stock-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .stock-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stock-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .stock-quantity {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #27ae60;
+        }
+        
+        .stock-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .summary-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .summary-card .value {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥥 පොල් සහ ඇට වර්ග කළමනාකරණ සිස්ටම්</h1>
+            <p>ස්ටොක්, විකුණුම් සහ මිල ගණන් කළමනාකරණය</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('stock')">ස්ටොක් බැලීම</button>
+            <button class="tab" onclick="showTab('add-stock')">ස්ටොක් එකතු කිරීම</button>
+            <button class="tab" onclick="showTab('sales')">විකුණුම්</button>
+            <button class="tab" onclick="showTab('prices')">මිල ගණන්</button>
+            <button class="tab" onclick="showTab('cheques')">චෙක්</button>
+        </div>
+        
+        <!-- Stock View Tab -->
+        <div id="stock" class="tab-content active">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>මුළු ප්‍රභේද</h3>
+                    <div class="value" id="totalItems">0</div>
+                </div>
+                <div class="summary-card">
+                    <h3>මුළු ස්ටොක් (kg)</h3>
+                    <div class="value" id="totalStock">0</div>
+                </div>
+                <div class="summary-card">
+                    <h3>අද විකුණුම්</h3>
+                    <div class="value" id="todaySales">0</div>
+                </div>
+            </div>
+            
+            <div id="stockList"></div>
+        </div>
+        
+        <!-- Add Stock Tab -->
+        <div id="add-stock" class="tab-content">
+            <h2>නව ස්ටොක් එකතු කිරීම</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ප්‍රභේදය:</label>
+                    <input type="text" id="itemName" placeholder="උදා: පොල්, රටකජු, බදම්">
+                </div>
+                <div class="form-group">
+                    <label>ප්‍රමාණය (kg):</label>
+                    <input type="number" step="0.1" id="itemQuantity" placeholder="0.0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>මිලදී ගත් මිල (kg එකකට):</label>
+                    <input type="number" step="0.01" id="purchasePrice" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>දිනය:</label>
+                    <input type="date" id="purchaseDate">
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="addStock()">ස්ටොක් එකතු කරන්න</button>
+            
+            <div id="addStockMessage"></div>
+        </div>
+        
+        <!-- Sales Tab -->
+        <div id="sales" class="tab-content">
+            <h2>විකුණුම්</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ප්‍රභේදය:</label>
+                    <select id="saleItem">
+                        <option value="">ප්‍රභේදයක් තෝරන්න</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ප්‍රමාණය (kg):</label>
+                    <input type="number" step="0.1" id="saleQuantity" placeholder="0.0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>විකුණුම් වර්ගය:</label>
+                    <select id="saleType">
+                        <option value="retail">සිල්ලර</option>
+                        <option value="wholesale">තොග</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>විකුණුම් මිල (kg එකකට):</label>
+                    <input type="number" step="0.01" id="salePrice" placeholder="0.00">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ගනුදෙනුකරුගේ නම:</label>
+                    <input type="text" id="customerName" placeholder="ගනුදෙනුකරුගේ නම">
+                </div>
+                <div class="form-group">
+                    <label>දිනය:</label>
+                    <input type="date" id="saleDate">
+                </div>
+            </div>
+            
+            <button class="btn btn-success" onclick="makeSale()">විකුණුම සටහන් කරන්න</button>
+            
+            <div id="salesMessage"></div>
+            
+            <div class="table-container">
+                <h3>අද විකුණුම්</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>වේලාව</th>
+                            <th>ප්‍රභේදය</th>
+                            <th>ප්‍රමාණය</th>
+                            <th>මිල</th>
+                            <th>වර්ගය</th>
+                            <th>ගනුදෙනුකරු</th>
+                            <th>මුළු මුදල</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todaySalesTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Prices Tab -->
+        <div id="prices" class="tab-content">
+            <h2>දෛනික මිල ගණන්</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ප්‍රභේදය:</label>
+                    <select id="priceItem">
+                        <option value="">ප්‍රභේදයක් තෝරන්න</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>සිල්ලර මිල (kg එකකට):</label>
+                    <input type="number" step="0.01" id="retailPrice" placeholder="0.00">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>තොග මිල (kg එකකට):</label>
+                    <input type="number" step="0.01" id="wholesalePrice" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>දිනය:</label>
+                    <input type="date" id="priceDate">
+                </div>
+            </div>
+            
+            <button class="btn btn-success" onclick="updatePrices()">මිල ගණන් යාවත්කාලීන කරන්න</button>
+            
+            <div id="pricesMessage"></div>
+            
+            <div class="table-container">
+                <h3>වර්තමාන මිල ගණන්</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ප්‍රභේදය</th>
+                            <th>සිල්ලර මිල</th>
+                            <th>තොග මිල</th>
+                            <th>යාවත්කාලීන කළ දිනය</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pricesTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Stock Reduction Tab -->
+        <div id="cheques" class="tab-content">
+            <h2>ස්ටොක් අඩුවීම් සහ චෙක්</h2>
+            
+            <h3>ස්ටොක් අඩුවීම (දේශගුණික බලපෑම්)</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ප්‍රභේදය:</label>
+                    <select id="reductionItem">
+                        <option value="">ප්‍රභේදයක් තෝරන්න</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>අඩු වූ ප්‍රමාණය (kg):</label>
+                    <input type="number" step="0.1" id="reductionQuantity" placeholder="0.0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>හේතුව:</label>
+                    <input type="text" id="reductionReason" placeholder="උදා: තෙතමනය, කුණුවීම">
+                </div>
+                <div class="form-group">
+                    <label>දිනය:</label>
+                    <input type="date" id="reductionDate">
+                </div>
+            </div>
+            <button class="btn btn-danger" onclick="reduceStock()">ස්ටොක් අඩු කරන්න</button>
+            
+            <hr style="margin: 40px 0;">
+            
+            <h3>චෙක් ගිණුම්</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>චෙක් අංකය:</label>
+                    <input type="text" id="chequeNumber" placeholder="චෙක් අංකය">
+                </div>
+                <div class="form-group">
+                    <label>මුදල:</label>
+                    <input type="number" step="0.01" id="chequeAmount" placeholder="0.00">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ගනුදෙනුකරු:</label>
+                    <input type="text" id="chequeCustomer" placeholder="ගනුදෙනුකරුගේ නම">
+                </div>
+                <div class="form-group">
+                    <label>දිනය:</label>
+                    <input type="date" id="chequeDate">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>සටහන්:</label>
+                <input type="text" id="chequeNotes" placeholder="අමතර සටහන්">
+            </div>
+            <button class="btn btn-success" onclick="addCheque()">චෙක් එකතු කරන්න</button>
+            
+            <div id="chequeMessage"></div>
+            
+            <div class="table-container">
+                <h3>චෙක් ලැයිස්තුව</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>චෙක් අංකය</th>
+                            <th>මුදල</th>
+                            <th>ගනුදෙනුකරු</th>
+                            <th>දිනය</th>
+                            <th>සටහන්</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chequesTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data storage
+        let inventory = {};
+        let sales = [];
+        let prices = {};
+        let cheques = [];
+        
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('purchaseDate').value = today;
+        document.getElementById('saleDate').value = today;
+        document.getElementById('priceDate').value = today;
+        document.getElementById('reductionDate').value = today;
+        document.getElementById('chequeDate').value = today;
+        
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // Refresh data when switching tabs
+            refreshData();
+        }
+        
+        function addStock() {
+            const name = document.getElementById('itemName').value.trim();
+            const quantity = parseFloat(document.getElementById('itemQuantity').value);
+            const price = parseFloat(document.getElementById('purchasePrice').value);
+            const date = document.getElementById('purchaseDate').value;
+            
+            if (!name || !quantity || !price || !date) {
+                showMessage('addStockMessage', 'කරුණාකර සියලු දත්ත පුරවන්න', 'warning');
+                return;
+            }
+            
+            if (!inventory[name]) {
+                inventory[name] = {
+                    totalQuantity: 0,
+                    purchases: [],
+                    sales: [],
+                    reductions: []
+                };
+            }
+            
+            inventory[name].totalQuantity += quantity;
+            inventory[name].purchases.push({
+                quantity: quantity,
+                price: price,
+                date: date,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Clear form
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQuantity').value = '';
+            document.getElementById('purchasePrice').value = '';
+            
+            showMessage('addStockMessage', `${name} - ${quantity}kg සාර්ථකව එකතු කරන ලදී`, 'success');
+            refreshData();
+        }
+        
+        function makeSale() {
+            const item = document.getElementById('saleItem').value;
+            const quantity = parseFloat(document.getElementById('saleQuantity').value);
+            const price = parseFloat(document.getElementById('salePrice').value);
+            const type = document.getElementById('saleType').value;
+            const customer = document.getElementById('customerName').value.trim();
+            const date = document.getElementById('saleDate').value;
+            
+            if (!item || !quantity || !price || !date) {
+                showMessage('salesMessage', 'කරුණාකර සියලු දත්ත පුරවන්න', 'warning');
+                return;
+            }
+            
+            if (!inventory[item] || inventory[item].totalQuantity < quantity) {
+                showMessage('salesMessage', 'ප්‍රමාණවත් ස්ටොක් නොමැත', 'warning');
+                return;
+            }
+            
+            // Reduce from inventory
+            inventory[item].totalQuantity -= quantity;
+            
+            // Add to sales
+            const sale = {
+                item: item,
+                quantity: quantity,
+                price: price,
+                type: type,
+                customer: customer,
+                date: date,
+                timestamp: new Date().toISOString(),
+                total: quantity * price
+            };
+            
+            sales.push(sale);
+            inventory[item].sales.push(sale);
+            
+            // Clear form
+            document.getElementById('saleQuantity').value = '';
+            document.getElementById('salePrice').value = '';
+            document.getElementById('customerName').value = '';
+            
+            showMessage('salesMessage', `${item} - ${quantity}kg සාර්ථකව විකුණන ලදී`, 'success');
+            refreshData();
+        }
+        
+        function updatePrices() {
+            const item = document.getElementById('priceItem').value;
+            const retailPrice = parseFloat(document.getElementById('retailPrice').value);
+            const wholesalePrice = parseFloat(document.getElementById('wholesalePrice').value);
+            const date = document.getElementById('priceDate').value;
+            
+            if (!item || !retailPrice || !wholesalePrice || !date) {
+                showMessage('pricesMessage', 'කරුණාකර සියලු දත්ත පුරවන්න', 'warning');
+                return;
+            }
+            
+            prices[item] = {
+                retail: retailPrice,
+                wholesale: wholesalePrice,
+                date: date,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Clear form
+            document.getElementById('retailPrice').value = '';
+            document.getElementById('wholesalePrice').value = '';
+            
+            showMessage('pricesMessage', `${item} හි මිල ගණන් යාවත්කාලීන කරන ලදී`, 'success');
+            refreshData();
+        }
+        
+        function reduceStock() {
+            const item = document.getElementById('reductionItem').value;
+            const quantity = parseFloat(document.getElementById('reductionQuantity').value);
+            const reason = document.getElementById('reductionReason').value.trim();
+            const date = document.getElementById('reductionDate').value;
+            
+            if (!item || !quantity || !reason || !date) {
+                showMessage('chequeMessage', 'කරුණාකර සියලු දත්ත පුරවන්න', 'warning');
+                return;
+            }
+            
+            if (!inventory[item] || inventory[item].totalQuantity < quantity) {
+                showMessage('chequeMessage', 'ප්‍රමාණවත් ස්ටොක් නොමැත', 'warning');
+                return;
+            }
+            
+            inventory[item].totalQuantity -= quantity;
+            inventory[item].reductions.push({
+                quantity: quantity,
+                reason: reason,
+                date: date,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Clear form
+            document.getElementById('reductionQuantity').value = '';
+            document.getElementById('reductionReason').value = '';
+            
+            showMessage('chequeMessage', `${item} - ${quantity}kg අඩු කරන ලදී`, 'success');
+            refreshData();
+        }
+        
+        function addCheque() {
+            const number = document.getElementById('chequeNumber').value.trim();
+            const amount = parseFloat(document.getElementById('chequeAmount').value);
+            const customer = document.getElementById('chequeCustomer').value.trim();
+            const date = document.getElementById('chequeDate').value;
+            const notes = document.getElementById('chequeNotes').value.trim();
+            
+            if (!number || !amount || !customer || !date) {
+                showMessage('chequeMessage', 'කරුණාකර අනිවාර්ය දත්ත පුරවන්න', 'warning');
+                return;
+            }
+            
+            cheques.push({
+                number: number,
+                amount: amount,
+                customer: customer,
+                date: date,
+                notes: notes,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Clear form
+            document.getElementById('chequeNumber').value = '';
+            document.getElementById('chequeAmount').value = '';
+            document.getElementById('chequeCustomer').value = '';
+            document.getElementById('chequeNotes').value = '';
+            
+            showMessage('chequeMessage', 'චෙක් සාර්ථකව එකතු කරන ලදී', 'success');
+            refreshData();
+        }
+        
+        function refreshData() {
+            updateSummary();
+            displayStock();
+            updateDropdowns();
+            displayTodaySales();
+            displayPrices();
+            displayCheques();
+        }
+        
+        function updateSummary() {
+            const totalItems = Object.keys(inventory).length;
+            const totalStock = Object.values(inventory).reduce((sum, item) => sum + item.totalQuantity, 0);
+            const todaySales = sales.filter(sale => sale.date === today).reduce((sum, sale) => sum + sale.total, 0);
+            
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('totalStock').textContent = totalStock.toFixed(1);
+            document.getElementById('todaySales').textContent = `Rs. ${todaySales.toFixed(2)}`;
+        }
+        
+        function displayStock() {
+            const stockList = document.getElementById('stockList');
+            stockList.innerHTML = '';
+            
+            Object.entries(inventory).forEach(([name, data]) => {
+                const stockItem = document.createElement('div');
+                stockItem.className = 'stock-item';
+                
+                const lastPurchase = data.purchases[data.purchases.length - 1];
+                const avgPurchasePrice = data.purchases.reduce((sum, p) => sum + p.price, 0) / data.purchases.length;
+                const totalSold = data.sales.reduce((sum, s) => sum + s.quantity, 0);
+                const totalReduced = data.reductions.reduce((sum, r) => sum + r.quantity, 0);
+                const currentPrice = prices[name];
+                
+                stockItem.innerHTML = `
+                    <div class="stock-header">
+                        <div class="stock-name">${name}</div>
+                        <div class="stock-quantity">${data.totalQuantity.toFixed(1)} kg</div>
+                    </div>
+                    <div class="stock-details">
+                        <div class="detail-item">
+                            <div class="detail-label">සාමාන්‍ය මිලදී ගැනීම්</div>
+                            <div class="detail-value">Rs. ${avgPurchasePrice.toFixed(2)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">මුළු විකුණුම්</div>
+                            <div class="detail-value">${totalSold.toFixed(1)} kg</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">අඩුවීම්</div>
+                            <div class="detail-value">${totalReduced.toFixed(1)} kg</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">වර්තමාන සිල්ලර මිල</div>
+                            <div class="detail-value">${currentPrice ? 'Rs. ' + currentPrice.retail.toFixed(2) : 'නිර්ණය නොකළ'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">වර්තමාන තොග මිල</div>
+                            <div class="detail-value">${currentPrice ? 'Rs. ' + currentPrice.wholesale.toFixed(2) : 'නිර්ණය නොකළ'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">අවසාන මිලදී ගැනීම</div>
+                            <div class="detail-value">${lastPurchase ? lastPurchase.date : 'නොමැත'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                stockList.appendChild(stockItem);
+            });
+        }
+        
+        function updateDropdowns() {
+            const itemNames = Object.keys(inventory);
+            
+            // Update sale item dropdown
+            const saleSelect = document.getElementById('saleItem');
+            saleSelect.innerHTML = '<option value="">ප්‍රභේදයක් තෝරන්න</option>';
+            itemNames.forEach(name => {
+                saleSelect.innerHTML += `<option value="${name}">${name}</option>`;
+            });
+            
+            // Update price item dropdown
+            const priceSelect = document.getElementById('priceItem');
+            priceSelect.innerHTML = '<option value="">ප්‍රභේදයක් තෝරන්න</option>';
+            itemNames.forEach(name => {
+                priceSelect.innerHTML += `<option value="${name}">${name}</option>`;
+            });
+            
+            // Update reduction item dropdown
+            const reductionSelect = document.getElementById('reductionItem');
+            reductionSelect.innerHTML = '<option value="">ප්‍රභේදයක් තෝරන්න</option>';
+            itemNames.forEach(name => {
+                reductionSelect.innerHTML += `<option value="${name}">${name}</option>`;
+            });
+        }
+        
+        function displayTodaySales() {
+            const todaySalesTable = document.getElementById('todaySalesTable');
+            const todaySalesData = sales.filter(sale => sale.date === today);
+            
+            todaySalesTable.innerHTML = '';
+            
+            todaySalesData.forEach(sale => {
+                const row = todaySalesTable.insertRow();
+                const time = new Date(sale.timestamp).toLocaleTimeString('si-LK');
+                
+                row.innerHTML = `
+                    <td>${time}</td>
+                    <td>${sale.item}</td>
+                    <td>${sale.quantity.toFixed(1)} kg</td>
+                    <td>Rs. ${sale.price.toFixed(2)}</td>
+                    <td>${sale.type === 'retail' ? 'සිල්ලර' : 'තොග'}</td>
+                    <td>${sale.customer}</td>
+                    <td>Rs. ${sale.total.toFixed(2)}</td>
+                `;
+            });
+        }
+        
+        function displayPrices() {
+            const pricesTable = document.getElementById('pricesTable');
+            pricesTable.innerHTML = '';
+            
+            Object.entries(prices).forEach(([item, priceData]) => {
+                const row = pricesTable.insertRow();
+                row.innerHTML = `
+                    <td>${item}</td>
+                    <td>Rs. ${priceData.retail.toFixed(2)}</td>
+                    <td>Rs. ${priceData.wholesale.toFixed(2)}</td>
+                    <td>${priceData.date}</td>
+                `;
+            });
+        }
+        
+        function displayCheques() {
+            const chequesTable = document.getElementById('chequesTable');
+            chequesTable.innerHTML = '';
+            
+            cheques.forEach(cheque => {
+                const row = chequesTable.insertRow();
+                row.innerHTML = `
+                    <td>${cheque.number}</td>
+                    <td>Rs. ${cheque.amount.toFixed(2)}</td>
+                    <td>${cheque.customer}</td>
+                    <td>${cheque.date}</td>
+                    <td>${cheque.notes}</td>
+                `;
+            });
+        }
+        
+        function showMessage(elementId, message, type) {
+            const messageDiv = document.getElementById(elementId);
+            messageDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        // Auto-fill price when item is selected for sale
+        document.getElementById('saleItem').addEventListener('change', function() {
+            const selectedItem = this.value;
+            const saleType = document.getElementById('saleType').value;
+            
+            if (selectedItem && prices[selectedItem]) {
+                const price = saleType === 'retail' ? prices[selectedItem].retail : prices[selectedItem].wholesale;
+                document.getElementById('salePrice').value = price.toFixed(2);
+            }
+        });
+        
+        document.getElementById('saleType').addEventListener('change', function() {
+            const selectedItem = document.getElementById('saleItem').value;
+            const saleType = this.value;
+            
+            if (selectedItem && prices[selectedItem]) {
+                const price = saleType === 'retail' ? prices[selectedItem].retail : prices[selectedItem].wholesale;
+                document.getElementById('salePrice').value = price.toFixed(2);
+            }
+        });
+        
+        // Initialize the system
+        refreshData();
+    </script>
+</body>
+</html>
